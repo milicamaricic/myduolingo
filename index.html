@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Svenska">
+<meta name="theme-color" content="#1e40af">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%231e40af' width='100' height='100' rx='20'/><text x='50' y='68' text-anchor='middle' font-size='50' fill='white'>🇸🇪</text></svg>">
+<link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiU3ZlbnNrYSIsInNob3J0X25hbWUiOiJTdmVuc2thIiwic3RhcnRfdXJsIjoiLiIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiNmMGY5ZmYiLCJ0aGVtZV9jb2xvciI6IiMxZTQwYWYifQ==">
+<title>Svenska — Milicas Swedish Trainer</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:linear-gradient(135deg,#f0f9ff,#e0e7ff);min-height:100vh;min-height:100dvh;overflow-x:hidden;padding-top:env(safe-area-inset-top)}
+.app{max-width:480px;margin:0 auto;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+
+/* Home */
+.home{flex:1;display:flex;flex-direction:column;align-items:center;padding:2rem 1rem;padding-bottom:calc(2rem + env(safe-area-inset-bottom))}
+.logo{font-size:2.5rem;font-weight:800;background:linear-gradient(135deg,#1d4ed8,#4f46e5);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.subtitle{color:#6b7280;margin-top:0.25rem;font-size:0.9rem}
+.badges{display:flex;gap:0.5rem;margin-top:0.75rem;flex-wrap:wrap;justify-content:center}
+.badge{font-size:0.7rem;padding:0.25rem 0.75rem;border-radius:99px;font-weight:600}
+.badge-blue{background:#dbeafe;color:#1d4ed8}
+.badge-green{background:#d1fae5;color:#047857}
+.badge-amber{background:#fef3c7;color:#b45309}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;width:100%;margin-top:1.5rem}
+.mode{border-radius:1rem;padding:1rem;cursor:pointer;transition:transform 0.2s;box-shadow:0 4px 12px rgba(0,0,0,0.1)}
+.mode:active{transform:scale(0.96)}
+.mode.full{grid-column:span 2}
+.mode-icon{font-size:1.5rem;margin-bottom:0.25rem}
+.mode-label{color:#fff;font-weight:700;font-size:0.85rem}
+.mode-desc{color:rgba(255,255,255,0.8);font-size:0.7rem}
+.bg-mix{background:linear-gradient(135deg,#3b82f6,#4f46e5)}
+.bg-flash{background:linear-gradient(135deg,#10b981,#0d9488)}
+.bg-mc{background:linear-gradient(135deg,#8b5cf6,#7c3aed)}
+.bg-fill{background:linear-gradient(135deg,#f59e0b,#ea580c)}
+.bg-gender{background:linear-gradient(135deg,#14b8a6,#06b6d4)}
+.bg-verb{background:linear-gradient(135deg,#f43f5e,#ec4899)}
+.bg-match{background:linear-gradient(135deg,#6366f1,#3b82f6)}
+
+/* Practice */
+.practice{flex:1;display:flex;flex-direction:column}
+.header{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 1rem;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,0.08)}
+.back-btn{color:#6b7280;font-size:0.85rem;font-weight:600;background:none;border:none;cursor:pointer;padding:0.25rem}
+.stats{display:flex;gap:0.5rem;align-items:center}
+.streak{font-size:0.7rem;background:#fef3c7;color:#b45309;padding:0.2rem 0.5rem;border-radius:99px;font-weight:700}
+.score-text{font-size:0.85rem;font-weight:600;color:#4b5563}
+.pct{font-size:0.7rem;padding:0.2rem 0.5rem;border-radius:99px;font-weight:700}
+.pct-good{background:#d1fae5;color:#047857}
+.pct-mid{background:#fef3c7;color:#b45309}
+.pct-low{background:#fee2e2;color:#b91c1c}
+.progress-bar{height:3px;background:#e5e7eb}
+.progress-fill{height:100%;background:linear-gradient(90deg,#3b82f6,#4f46e5);transition:width 0.5s}
+.exercise-area{flex:1;display:flex;align-items:center;justify-content:center;padding:1rem;padding-bottom:calc(1rem + env(safe-area-inset-bottom))}
+.exercise{display:flex;flex-direction:column;align-items:center;gap:1.25rem;width:100%}
+
+/* Exercise elements */
+.ex-tag{font-size:0.75rem;font-weight:600;padding:0.25rem 0.75rem;border-radius:99px}
+.tag-purple{background:#f3e8ff;color:#7c3aed}
+.tag-teal{background:#ccfbf1;color:#0d9488}
+.tag-amber{background:#fef3c7;color:#b45309}
+.tag-rose{background:#ffe4e6;color:#e11d48}
+.tag-blue{background:#dbeafe;color:#1d4ed8}
+.tag-indigo{background:#e0e7ff;color:#4338ca}
+.prompt{font-size:1.75rem;font-weight:700;color:#1f2937;text-align:center}
+.hint{font-size:0.85rem;color:#6b7280}
+.day-tag{font-size:0.7rem;color:#9ca3af}
+.example{font-size:0.8rem;color:rgba(255,255,255,0.85);margin-top:0.5rem;padding:0 1rem;text-align:center;font-style:italic}
+
+/* Flashcard */
+.flashcard{width:100%;max-width:320px;height:200px;border-radius:1rem;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,0.12);transition:transform 0.3s}
+.flashcard:active{transform:scale(0.97)}
+.flash-front{background:linear-gradient(135deg,#3b82f6,#1d4ed8)}
+.flash-back{background:linear-gradient(135deg,#10b981,#059669)}
+.flash-word{font-size:1.75rem;font-weight:700;color:#fff}
+.flash-hint{font-size:0.8rem;color:rgba(255,255,255,0.7);margin-top:0.5rem}
+
+/* Options grid */
+.options{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;width:100%;max-width:320px}
+.option{padding:0.85rem;border-radius:0.75rem;border:2px solid #e5e7eb;text-align:center;cursor:pointer;transition:all 0.2s;font-size:0.85rem;font-weight:600}
+.option:active:not(.answered){transform:scale(0.96)}
+.opt-hover:active{border-color:#60a5fa;background:#eff6ff}
+.opt-correct{border-color:#22c55e;background:#f0fdf4;color:#15803d}
+.opt-wrong{border-color:#ef4444;background:#fef2f2;color:#b91c1c}
+.opt-dim{border-color:#e5e7eb;opacity:0.4}
+
+/* Gender buttons */
+.gender-btns{display:flex;gap:1rem}
+.gender-btn{width:7rem;padding:1.25rem;border-radius:0.75rem;border:2px solid #e5e7eb;text-align:center;cursor:pointer;font-size:1.5rem;font-weight:700;transition:all 0.2s}
+.gender-btn:active:not(.answered){transform:scale(0.96)}
+
+/* Input */
+.text-input{width:100%;max-width:280px;padding:0.85rem;border:2px solid #e5e7eb;border-radius:0.75rem;text-align:center;font-size:1.1rem;outline:none;transition:border-color 0.2s}
+.text-input:focus{border-color:#60a5fa}
+.text-input:disabled{background:#f9fafb}
+
+/* Buttons */
+.btn{padding:0.6rem 1.75rem;border-radius:99px;border:none;font-weight:600;font-size:0.85rem;cursor:pointer;transition:all 0.2s}
+.btn:active{transform:scale(0.96)}
+.btn-primary{background:#1d4ed8;color:#fff}
+.btn-dark{background:#1f2937;color:#fff}
+.btn-next{background:#1f2937;color:#fff;margin-top:0.25rem}
+
+/* Result text */
+.result{font-size:0.85rem;font-weight:600}
+.result-ok{color:#16a34a}
+.result-fail{color:#dc2626}
+.detail{font-size:0.75rem;color:#9ca3af;font-style:italic}
+
+/* Match pairs */
+.match-area{display:flex;gap:1rem;justify-content:center}
+.match-col{display:flex;flex-direction:column;gap:0.4rem}
+.match-item{width:9rem;padding:0.5rem;border-radius:0.5rem;text-align:center;font-size:0.8rem;cursor:pointer;transition:all 0.2s;border:2px solid #e5e7eb}
+.match-item:active:not(.m-done){transform:scale(0.96)}
+.m-sel{border-color:#3b82f6;background:#eff6ff;color:#1d4ed8}
+.m-done{border-color:#22c55e;background:#f0fdf4;color:#15803d;opacity:0.6}
+.m-wrong{border-color:#ef4444;background:#fef2f2}
+
+/* Sentence */
+.sentence{font-size:1.05rem;color:#374151;text-align:center;line-height:1.6;padding:0 0.5rem}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+<script>
+// ─── DATA ───
+const MY_NOUNS=[
+{sv:"gröt",en:"porridge",g:"en",d:"gröten",p:"—",dp:"—",ex:"Vi åt gröt med blåbär till frukost.",dy:1},
+{sv:"potatismos",en:"mashed potatoes",g:"ett",d:"potatimoset",p:"—",dp:"—",ex:"Erik valde köttbullar med potatismos.",dy:1},
+{sv:"utflykt",en:"outing",g:"en",d:"utflykten",p:"utflykter",dp:"utflykterna",ex:"De borde göra utflykter oftare.",dy:1},
+{sv:"loppis",en:"flea market",g:"en",d:"loppisen",p:"loppisar",dp:"loppisarna",ex:"Maria gick till en stor loppis.",dy:2},
+{sv:"fynd",en:"bargain",g:"ett",d:"fyndet",p:"fynd",dp:"fynden",ex:"Hon letade efter fynd.",dy:2},
+{sv:"ylletröja",en:"wool sweater",g:"en",d:"ylletröjan",p:"ylletröjor",dp:"ylletröjorna",ex:"Hon hittade en tjock ylletröja.",dy:2},
+{sv:"granne",en:"neighbour",g:"en",d:"grannen",p:"grannar",dp:"grannarna",ex:"Hon träffade sin granne.",dy:2},
+{sv:"värde",en:"value",g:"ett",d:"värdet",p:"värden",dp:"värdena",ex:"Det hade ett känslomässigt värde.",dy:2},
+{sv:"andetag",en:"breath",g:"ett",d:"andetaget",p:"andetag",dp:"andetagen",ex:"Sofia tog ett djupt andetag.",dy:3},
+{sv:"arbetsuppgift",en:"work task",g:"en",d:"arbetsuppgiften",p:"arbetsuppgifter",dp:"arbetsuppgifterna",ex:"De diskuterade hennes arbetsuppgifter.",dy:3},
+{sv:"kund",en:"customer",g:"en",d:"kunden",p:"kunder",dp:"kunderna",ex:"Hon skrev till kunderna.",dy:3},
+{sv:"stämning",en:"atmosphere",g:"en",d:"stämningen",p:"stämningar",dp:"stämningarna",ex:"Stämningen var bra.",dy:3},
+{sv:"pöl",en:"puddle",g:"en",d:"pölen",p:"pölar",dp:"pölarna",ex:"Pölarna glittrade.",dy:4},
+{sv:"knä",en:"knee",g:"ett",d:"knäet",p:"knän",dp:"knäna",ex:"Han hade en tidning i knäet.",dy:4},
+{sv:"utkant",en:"outskirts",g:"en",d:"utkanten",p:"utkanter",dp:"utkanterna",ex:"Det låg i utkanten av staden.",dy:4},
+{sv:"blankett",en:"form (document)",g:"en",d:"blanketten",p:"blanketter",dp:"blanketterna",ex:"Han förstod inte blanketterna.",dy:4},
+{sv:"fält",en:"field",g:"ett",d:"fältet",p:"fält",dp:"fälten",ex:"Klara hjälpte honom fylla i fälten.",dy:4},
+];
+const EXTRA_NOUNS=[
+{sv:"upplevelse",en:"experience",g:"en",d:"upplevelsen",p:"upplevelser",dp:"upplevelserna",ex:"Det var en fantastisk upplevelse.",dy:0},
+{sv:"förslag",en:"suggestion",g:"ett",d:"förslaget",p:"förslag",dp:"förslagen",ex:"Har du något förslag?",dy:0},
+{sv:"samhälle",en:"society",g:"ett",d:"samhället",p:"samhällen",dp:"samhällena",ex:"Vi lever i ett modernt samhälle.",dy:0},
+{sv:"önskan",en:"wish",g:"en",d:"önskan",p:"önskningar",dp:"önskningarna",ex:"Min största önskan är att resa.",dy:0},
+{sv:"beteende",en:"behaviour",g:"ett",d:"beteendet",p:"beteenden",dp:"beteendena",ex:"Hans beteende var konstigt.",dy:0},
+{sv:"skillnad",en:"difference",g:"en",d:"skillnaden",p:"skillnader",dp:"skillnaderna",ex:"Vad är skillnaden?",dy:0},
+{sv:"möjlighet",en:"opportunity",g:"en",d:"möjligheten",p:"möjligheter",dp:"möjligheterna",ex:"Det finns många möjligheter.",dy:0},
+{sv:"innehåll",en:"content",g:"ett",d:"innehållet",p:"—",dp:"—",ex:"Innehållet var intressant.",dy:0},
+{sv:"ansvar",en:"responsibility",g:"ett",d:"ansvaret",p:"—",dp:"—",ex:"Hon tog ansvar för projektet.",dy:0},
+{sv:"inflytande",en:"influence",g:"ett",d:"inflytandet",p:"—",dp:"—",ex:"Musik har stort inflytande.",dy:0},
+{sv:"orsak",en:"reason / cause",g:"en",d:"orsaken",p:"orsaker",dp:"orsakerna",ex:"Vad är orsaken till problemet?",dy:0},
+{sv:"tillstånd",en:"permission / condition",g:"ett",d:"tillståndet",p:"tillstånd",dp:"tillstånden",ex:"Du behöver ett tillstånd.",dy:0},
+];
+const ALL_NOUNS=[...MY_NOUNS,...EXTRA_NOUNS];
+
+const MY_ADJ=[
+{sv:"fridfull",en:"peaceful",ef:"fridfull",tf:"fridfullt",pl:"fridfulla",ex:"Trädgården var fridfull.",dy:1},
+{sv:"krämig",en:"creamy",ef:"krämig",tf:"krämigt",pl:"krämiga",ex:"En krämig svampsoppa.",dy:1},
+{sv:"utsökt",en:"delicious",ef:"utsökt",tf:"utsökt",pl:"utsökta",ex:"Maten var utsökt!",dy:1},
+{sv:"rimlig",en:"reasonable",ef:"rimlig",tf:"rimligt",pl:"rimliga",ex:"Priserna var rimliga.",dy:1},
+{sv:"rörande",en:"touching",ef:"rörande",tf:"rörande",pl:"rörande",ex:"Filmen var rörande.",dy:1},
+{sv:"udda",en:"odd / unusual",ef:"udda",tf:"udda",pl:"udda",ex:"Hon letade efter udda porslin.",dy:2},
+{sv:"begagnad",en:"second-hand",ef:"begagnad",tf:"begagnat",pl:"begagnade",ex:"Begagnade kläder är billigare.",dy:2},
+{sv:"nyfiken",en:"curious",ef:"nyfiken",tf:"nyfiket",pl:"nyfikna",ex:"Hon tittade nyfiket på allt.",dy:2},
+{sv:"utmärkt",en:"excellent",ef:"utmärkt",tf:"utmärkt",pl:"utmärkta",ex:"Tröjan var i utmärkt skick.",dy:2},
+{sv:"känslomässig",en:"emotional",ef:"känslomässig",tf:"känslomässigt",pl:"känslomässiga",ex:"Ett känslomässigt värde.",dy:2},
+{sv:"trång",en:"cramped",ef:"trång",tf:"trångt",pl:"trånga",ex:"Lägenheten var för trång.",dy:2},
+{sv:"vänlig",en:"friendly",ef:"vänlig",tf:"vänligt",pl:"vänliga",ex:"En vänlig kvinna.",dy:3},
+{sv:"vilsen",en:"lost",ef:"vilsen",tf:"vilset",pl:"vilsna",ex:"Sofia kände sig vilsen.",dy:3},
+{sv:"överväldigande",en:"overwhelming",ef:"överväldigande",tf:"överväldigande",pl:"överväldigande",ex:"Det var överväldigande.",dy:3},
+{sv:"avslappnad",en:"relaxed",ef:"avslappnad",tf:"avslappnat",pl:"avslappnade",ex:"Fredagarna var avslappnade.",dy:3},
+{sv:"skrynklig",en:"wrinkled",ef:"skrynklig",tf:"skrynkligt",pl:"skrynkliga",ex:"En skrynklig tidning.",dy:4},
+{sv:"tålmodig",en:"patient",ef:"tålmodig",tf:"tålmodigt",pl:"tålmodiga",ex:"Klara väntade tålmodigt.",dy:4},
+{sv:"krånglig",en:"complicated",ef:"krånglig",tf:"krångligt",pl:"krångliga",ex:"Skattesystemet var krångligt.",dy:4},
+];
+const EXTRA_ADJ=[
+{sv:"pålitlig",en:"reliable",ef:"pålitlig",tf:"pålitligt",pl:"pålitliga",ex:"Hon är en pålitlig vän.",dy:0},
+{sv:"oväntad",en:"unexpected",ef:"oväntad",tf:"oväntat",pl:"oväntade",ex:"Ett oväntat besök.",dy:0},
+{sv:"förvirrad",en:"confused",ef:"förvirrad",tf:"förvirrat",pl:"förvirrade",ex:"Han såg förvirrad ut.",dy:0},
+{sv:"omtänksam",en:"caring",ef:"omtänksam",tf:"omtänksamt",pl:"omtänksamma",ex:"Din mamma är omtänksam.",dy:0},
+{sv:"envis",en:"stubborn",ef:"envis",tf:"envist",pl:"envisa",ex:"Katten är väldigt envis.",dy:0},
+{sv:"tillgänglig",en:"available",ef:"tillgänglig",tf:"tillgängligt",pl:"tillgängliga",ex:"Är chefen tillgänglig?",dy:0},
+{sv:"lämplig",en:"suitable",ef:"lämplig",tf:"lämpligt",pl:"lämpliga",ex:"Det var inte lämpligt.",dy:0},
+{sv:"tydlig",en:"clear",ef:"tydlig",tf:"tydligt",pl:"tydliga",ex:"Instruktionerna var tydliga.",dy:0},
+];
+const ALL_ADJ=[...MY_ADJ,...EXTRA_ADJ];
+
+const MY_VERBS=[
+{sv:"smälta",en:"to melt",pr:"smälte",su:"smält",ex:"Snön börjar smälta.",dy:1},
+{sv:"trängas",en:"to crowd",pr:"trängdes",su:"trängts",ex:"Utan att trängas.",dy:2},
+{sv:"tveka",en:"to hesitate",pr:"tvekade",su:"tvekat",ex:"Maria tvekade inte.",dy:2},
+{sv:"hälsa",en:"to greet",pr:"hälsade",su:"hälsat",ex:"Alla hälsade.",dy:3},
+{sv:"sucka",en:"to sigh",pr:"suckade",su:"suckat",ex:"Hon suckade tungt.",dy:4},
+{sv:"skjuta upp",en:"to postpone",pr:"sköt upp",su:"skjutit upp",ex:"Hon hade skjutit upp det.",dy:4},
+{sv:"viska",en:"to whisper",pr:"viskade",su:"viskat",ex:"Han viskade till henne.",dy:4},
+];
+const EXTRA_VERBS=[
+{sv:"inse",en:"to realize",pr:"insåg",su:"insett",ex:"Jag insåg att jag hade fel.",dy:0},
+{sv:"ångra",en:"to regret",pr:"ångrade",su:"ångrat",ex:"Han ångrade sitt beslut.",dy:0},
+{sv:"uppskatta",en:"to appreciate",pr:"uppskattade",su:"uppskattat",ex:"Jag uppskattar din hjälp.",dy:0},
+{sv:"misslyckas",en:"to fail",pr:"misslyckades",su:"misslyckats",ex:"Projektet misslyckades.",dy:0},
+{sv:"utveckla",en:"to develop",pr:"utvecklade",su:"utvecklat",ex:"Vi ska utveckla en ny app.",dy:0},
+{sv:"föredra",en:"to prefer",pr:"föredrog",su:"föredragit",ex:"Jag föredrar kaffe.",dy:0},
+{sv:"avbryta",en:"to interrupt",pr:"avbröt",su:"avbrutit",ex:"Avbryt mig inte!",dy:0},
+{sv:"övertyga",en:"to convince",pr:"övertygade",su:"övertygat",ex:"Hon övertygade sin chef.",dy:0},
+];
+const ALL_VERBS=[...MY_VERBS,...EXTRA_VERBS];
+
+const ALL_WORDS=[
+...ALL_NOUNS.map(w=>({...w,t:"noun"})),
+...ALL_ADJ.map(w=>({...w,t:"adj"})),
+...ALL_VERBS.map(w=>({...w,t:"verb"})),
+];
+
+// ─── UTILS ───
+const shuffle=a=>{const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b};
+const pick=(arr,n,ex)=>shuffle(arr.filter(x=>x.sv!==ex)).slice(0,n);
+const $=s=>document.querySelector(s);
+const h=t=>{const d=document.createElement('div');d.innerHTML=t;return d.firstElementChild||d};
+
+// ─── STATE ───
+let state={screen:"home",mode:"mix",score:0,total:0,streak:0,best:0,exKey:0,exercise:null};
+
+// ─── GENERATORS ───
+function genMC(){
+  const w=ALL_WORDS[Math.floor(Math.random()*ALL_WORDS.length)];
+  const dir=Math.random()>0.5?"sv":"en";
+  const correct=dir==="sv"?w.en:w.sv;
+  const distractors=pick(ALL_WORDS,3,w.sv).map(d=>dir==="sv"?d.en:d.sv);
+  return{type:"mc",word:w,dir,options:shuffle([correct,...distractors]),correct};
+}
+function genGender(){
+  const n=ALL_NOUNS[Math.floor(Math.random()*ALL_NOUNS.length)];
+  return{type:"gender",word:n};
+}
+function genFlash(){
+  const w=ALL_WORDS[Math.floor(Math.random()*ALL_WORDS.length)];
+  return{type:"flash",word:w,dir:Math.random()>0.5?"sv":"en"};
+}
+function genFill(){
+  const w=ALL_WORDS[Math.floor(Math.random()*ALL_WORDS.length)];
+  const s=w.ex;const t=w.sv;
+  const blank=s.replace(new RegExp(t,"gi"),"______");
+  if(blank===s){
+    const words=s.split(" ");
+    if(words.length>2){const i=Math.floor(Math.random()*words.length);const r=words[i].replace(/[.,!?]/g,"");words[i]="______";return{type:"fill",sentence:words.join(" "),answer:r.toLowerCase(),original:s,word:w}}
+  }
+  return{type:"fill",sentence:blank,answer:t.toLowerCase(),original:s,word:w};
+}
+function genVerb(){
+  const v=ALL_VERBS[Math.floor(Math.random()*ALL_VERBS.length)];
+  const ft=Math.random()>0.5?"preteritum":"supinum";
+  return{type:"verb",word:v,formType:ft,answer:ft==="preteritum"?v.pr:v.su};
+}
+function genMatch(){
+  const sel=shuffle(ALL_WORDS).slice(0,5);
+  return{type:"match",pairs:sel.map(w=>({sv:w.sv,en:w.en})),shEn:shuffle(sel.map(w=>w.en))};
+}
+function genExercise(m){
+  const gens={
+    mix:()=>{const r=Math.random();if(r<0.15)return genFlash();if(r<0.35)return genMC();if(r<0.50)return genFill();if(r<0.65)return genGender();if(r<0.80)return genVerb();return genMatch()},
+    flashcards:genFlash,"multiple-choice":genMC,"fill-blank":genFill,gender:genGender,"verb-forms":genVerb,match:genMatch
+  };
+  return(gens[m]||gens.mix)();
+}
+
+// ─── SCORING ───
+function addScore(correct){
+  state.total++;
+  if(correct){state.score++;state.streak++;if(state.streak>state.best)state.best=state.streak}
+  else state.streak=0;
+}
+function nextEx(){state.exKey++;state.exercise=genExercise(state.mode);render()}
+
+// ─── RENDER ───
+function render(){
+  const app=$('#app');
+  if(state.screen==="home")renderHome(app);
+  else renderPractice(app);
+}
+
+function renderHome(app){
+  const modes=[
+    {id:"mix",label:"Full Mix",icon:"🎲",desc:"All exercise types",cls:"bg-mix full"},
+    {id:"flashcards",label:"Flashcards",icon:"🃏",desc:"Flip & learn",cls:"bg-flash"},
+    {id:"multiple-choice",label:"Multiple Choice",icon:"✅",desc:"Pick the right answer",cls:"bg-mc"},
+    {id:"fill-blank",label:"Fill the Blank",icon:"✏️",desc:"Complete the sentence",cls:"bg-fill"},
+    {id:"gender",label:"En eller Ett?",icon:"🏷️",desc:"Noun genders",cls:"bg-gender"},
+    {id:"verb-forms",label:"Verb Forms",icon:"🔄",desc:"Preteritum & supinum",cls:"bg-verb"},
+    {id:"match",label:"Match Pairs",icon:"🔗",desc:"Connect SV ↔ EN",cls:"bg-match"},
+  ];
+  app.innerHTML=`<div class="home">
+    <div class="logo">Svenska</div>
+    <div class="subtitle">Milicas Swedish Trainer</div>
+    <div class="badges">
+      <span class="badge badge-blue">${ALL_WORDS.length} words</span>
+      <span class="badge badge-green">A2 → B1</span>
+      ${state.best>0?`<span class="badge badge-amber">Best streak: ${state.best}</span>`:""}
+    </div>
+    <div class="modes">
+      ${modes.map(m=>`<div class="mode ${m.cls}" data-mode="${m.id}">
+        <div class="mode-icon">${m.icon}</div>
+        <div class="mode-label">${m.label}</div>
+        <div class="mode-desc">${m.desc}</div>
+      </div>`).join("")}
+    </div>
+  </div>`;
+  app.querySelectorAll('.mode').forEach(el=>{
+    el.onclick=()=>{state.screen="practice";state.mode=el.dataset.mode;state.score=0;state.total=0;state.streak=0;state.exercise=genExercise(state.mode);state.exKey=0;render()};
+  });
+}
+
+function renderPractice(app){
+  const pct=state.total>0?Math.round(state.score/state.total*100):0;
+  const pctCls=pct>=80?"pct-good":pct>=50?"pct-mid":"pct-low";
+  app.innerHTML=`<div class="practice">
+    <div class="header">
+      <button class="back-btn" id="back">← Back</button>
+      <div class="stats">
+        ${state.streak>0?`<span class="streak">🔥 ${state.streak}</span>`:""}
+        <span class="score-text">${state.score}/${state.total}</span>
+        ${state.total>0?`<span class="pct ${pctCls}">${pct}%</span>`:""}
+      </div>
+    </div>
+    ${state.total>0?`<div class="progress-bar"><div class="progress-fill" style="width:${Math.min(pct,100)}%"></div></div>`:""}
+    <div class="exercise-area" id="exArea"></div>
+  </div>`;
+  $('#back').onclick=()=>{state.screen="home";render()};
+  renderExercise($('#exArea'));
+}
+
+function renderExercise(area){
+  const ex=state.exercise;
+  if(!ex)return;
+  if(ex.type==="mc")renderMC(area,ex);
+  else if(ex.type==="gender")renderGender(area,ex);
+  else if(ex.type==="flash")renderFlash(area,ex);
+  else if(ex.type==="fill")renderFill(area,ex);
+  else if(ex.type==="verb")renderVerbForm(area,ex);
+  else if(ex.type==="match")renderMatchGame(area,ex);
+}
+
+// ─── MC ───
+function renderMC(area,ex){
+  const prompt=ex.dir==="sv"?ex.word.sv:ex.word.en;
+  const label=ex.dir==="sv"?"What does this mean in English?":"Vad heter detta på svenska?";
+  area.innerHTML=`<div class="exercise">
+    <span class="ex-tag tag-purple">Multiple Choice</span>
+    <div class="hint">${label}</div>
+    <div class="prompt">${prompt}</div>
+    <div class="options">${ex.options.map((o,i)=>`<div class="option opt-hover" data-i="${i}">${o}</div>`).join("")}</div>
+    ${ex.word.dy>0?`<span class="day-tag">Dag ${ex.word.dy}</span>`:""}
+  </div>`;
+  area.querySelectorAll('.option').forEach(el=>{
+    el.onclick=()=>{
+      if(el.classList.contains('answered'))return;
+      area.querySelectorAll('.option').forEach(o=>o.classList.add('answered'));
+      const val=ex.options[el.dataset.i];
+      const ok=val===ex.correct;
+      addScore(ok);
+      area.querySelectorAll('.option').forEach(o=>{
+        o.classList.remove('opt-hover');
+        if(o.textContent===ex.correct)o.classList.add('opt-correct');
+        else if(o===el&&!ok)o.classList.add('opt-wrong');
+        else o.classList.add('opt-dim');
+      });
+      const r=document.createElement('div');
+      r.className=`result ${ok?"result-ok":"result-fail"}`;
+      r.textContent=ok?"Correct!":"The answer was: "+ex.correct;
+      area.querySelector('.exercise').appendChild(r);
+      setTimeout(nextEx,ok?800:1500);
+    };
+  });
+}
+
+// ─── GENDER ───
+function renderGender(area,ex){
+  area.innerHTML=`<div class="exercise">
+    <span class="ex-tag tag-teal">En eller Ett?</span>
+    <div class="prompt">${ex.word.sv}</div>
+    <div class="hint">(${ex.word.en})</div>
+    <div class="gender-btns">
+      <div class="gender-btn" data-g="en">en</div>
+      <div class="gender-btn" data-g="ett">ett</div>
+    </div>
+    ${ex.word.dy>0?`<span class="day-tag">Dag ${ex.word.dy}</span>`:""}
+  </div>`;
+  area.querySelectorAll('.gender-btn').forEach(el=>{
+    el.onclick=()=>{
+      if(el.classList.contains('answered'))return;
+      area.querySelectorAll('.gender-btn').forEach(o=>o.classList.add('answered'));
+      const ok=el.dataset.g===ex.word.g;
+      addScore(ok);
+      area.querySelectorAll('.gender-btn').forEach(o=>{
+        if(o.dataset.g===ex.word.g)o.classList.add('opt-correct');
+        else if(o===el&&!ok)o.classList.add('opt-wrong');
+        else o.classList.add('opt-dim');
+      });
+      const info=document.createElement('div');info.className='hint';info.textContent='Bestämd form: '+ex.word.d;
+      area.querySelector('.exercise').appendChild(info);
+      setTimeout(nextEx,ok?800:1500);
+    };
+  });
+}
+
+// ─── FLASHCARD ───
+function renderFlash(area,ex){
+  let flipped=false;
+  const front=ex.dir==="sv"?ex.word.sv:ex.word.en;
+  const back=ex.dir==="sv"?ex.word.en:ex.word.sv;
+  area.innerHTML=`<div class="exercise">
+    <span class="ex-tag tag-blue">Flashcard</span>
+    <div class="flashcard flash-front" id="fcard">
+      <div class="flash-word" id="fword">${front}</div>
+      <div class="flash-hint" id="fhint">Tap to flip</div>
+    </div>
+    ${ex.word.dy>0?`<span class="day-tag">Dag ${ex.word.dy}</span>`:""}
+    <button class="btn btn-dark" id="fnext">Next</button>
+  </div>`;
+  $('#fcard').onclick=()=>{
+    flipped=!flipped;
+    const c=$('#fcard');const w=$('#fword');const h=$('#fhint');
+    if(flipped){c.classList.remove('flash-front');c.classList.add('flash-back');w.textContent=back;h.textContent=ex.word.ex?'"'+ex.word.ex+'"':""}
+    else{c.classList.remove('flash-back');c.classList.add('flash-front');w.textContent=front;h.textContent="Tap to flip"}
+  };
+  $('#fnext').onclick=nextEx;
+}
+
+// ─── FILL BLANK ───
+function renderFill(area,ex){
+  area.innerHTML=`<div class="exercise">
+    <span class="ex-tag tag-amber">Fill in the Blank</span>
+    <div class="sentence">${ex.sentence}</div>
+    <input class="text-input" id="finput" placeholder="Type the missing word..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+    <button class="btn btn-primary" id="fcheck">Check</button>
+  </div>`;
+  const inp=$('#finput');
+  const check=()=>{
+    const v=inp.value.trim().toLowerCase();if(!v)return;
+    inp.disabled=true;
+    const ok=v===ex.answer;
+    addScore(ok);
+    const r=document.createElement('div');r.className=`result ${ok?"result-ok":"result-fail"}`;
+    r.textContent=ok?"Correct!":"Answer: "+ex.answer;
+    const d=document.createElement('div');d.className='detail';d.textContent='"'+ex.original+'"';
+    const b=document.createElement('button');b.className='btn btn-next';b.textContent='Next';b.onclick=nextEx;
+    const exercise=area.querySelector('.exercise');
+    $('#fcheck').remove();
+    exercise.appendChild(r);exercise.appendChild(d);exercise.appendChild(b);
+  };
+  $('#fcheck').onclick=check;
+  inp.onkeydown=e=>{if(e.key==='Enter')check()};
+  inp.focus();
+}
+
+// ─── VERB FORM ───
+function renderVerbForm(area,ex){
+  area.innerHTML=`<div class="exercise">
+    <span class="ex-tag tag-rose">Verb Forms</span>
+    <div class="hint">What is the <b>${ex.formType}</b> of:</div>
+    <div class="prompt">${ex.word.sv}</div>
+    <div class="hint">(${ex.word.en})</div>
+    <input class="text-input" id="vinput" placeholder="${ex.formType}..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+    <button class="btn btn-primary" id="vcheck">Check</button>
+  </div>`;
+  const inp=$('#vinput');
+  const check=()=>{
+    const v=inp.value.trim().toLowerCase();if(!v)return;
+    inp.disabled=true;
+    const ok=v===ex.answer.toLowerCase();
+    addScore(ok);
+    const r=document.createElement('div');r.className=`result ${ok?"result-ok":"result-fail"}`;
+    r.textContent=ok?"Correct!":"Answer: "+ex.answer;
+    const d=document.createElement('div');d.className='detail';d.textContent=ex.word.sv+" / "+ex.word.pr+" / "+ex.word.su;
+    const b=document.createElement('button');b.className='btn btn-next';b.textContent='Next';b.onclick=nextEx;
+    const exercise=area.querySelector('.exercise');
+    $('#vcheck').remove();
+    exercise.appendChild(r);exercise.appendChild(d);exercise.appendChild(b);
+  };
+  $('#vcheck').onclick=check;
+  inp.onkeydown=e=>{if(e.key==='Enter')check()};
+  inp.focus();
+}
+
+// ─── MATCH ───
+function renderMatchGame(area,ex){
+  let selSv=null;const matched={};
+  area.innerHTML=`<div class="exercise">
+    <span class="ex-tag tag-indigo">Match Pairs</span>
+    <div class="hint">Tap a Swedish word, then its English match</div>
+    <div class="match-area">
+      <div class="match-col" id="mcSv">${ex.pairs.map(p=>`<div class="match-item" data-sv="${p.sv}">${p.sv}</div>`).join("")}</div>
+      <div class="match-col" id="mcEn">${ex.shEn.map(en=>`<div class="match-item" data-en="${en}">${en}</div>`).join("")}</div>
+    </div>
+  </div>`;
+  area.querySelectorAll('[data-sv]').forEach(el=>{
+    el.onclick=()=>{
+      if(matched[el.dataset.sv])return;
+      area.querySelectorAll('[data-sv]').forEach(o=>o.classList.remove('m-sel'));
+      el.classList.add('m-sel');selSv=el.dataset.sv;
+    };
+  });
+  area.querySelectorAll('[data-en]').forEach(el=>{
+    el.onclick=()=>{
+      if(!selSv||Object.values(matched).includes(el.dataset.en))return;
+      const pair=ex.pairs.find(p=>p.sv===selSv);
+      if(pair&&pair.en===el.dataset.en){
+        matched[selSv]=el.dataset.en;
+        area.querySelector(`[data-sv="${selSv}"]`).classList.remove('m-sel');
+        area.querySelector(`[data-sv="${selSv}"]`).classList.add('m-done');
+        el.classList.add('m-done');selSv=null;
+        if(Object.keys(matched).length===ex.pairs.length){
+          addScore(true);
+          const r=document.createElement('div');r.className='result result-ok';r.textContent='All matched!';
+          const b=document.createElement('button');b.className='btn btn-next';b.textContent='Next';b.onclick=nextEx;
+          area.querySelector('.exercise').appendChild(r);area.querySelector('.exercise').appendChild(b);
+        }
+      }else{
+        el.classList.add('m-wrong');
+        setTimeout(()=>el.classList.remove('m-wrong'),600);
+      }
+    };
+  });
+}
+
+// ─── INIT ───
+render();
+</script>
+</body>
+</html>
